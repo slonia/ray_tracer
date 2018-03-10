@@ -8,9 +8,9 @@ import (
 func main() {
 	nx := 600
 	ny := 300
-	max_color := float32(255.99)
+	maxColor := float32(255.99)
 	fmt.Printf("P3\n%v %v\n255\n", nx, ny)
-	lower_left_corner := vec3{-2.0, -1.0, -1.0}
+	lowerLeftCorner := vec3{-2.0, -1.0, -1.0}
 	horizontal := vec3{4, 0.0, 0.0}
 	vertical := vec3{0, 2.0, 0.0}
 	origin := vec3{0.0, 0.0, 0.0}
@@ -18,11 +18,11 @@ func main() {
 		for i := 0; i < nx; i++ {
 			u := float32(i) / float32(nx)
 			v := float32(j) / float32(ny)
-			r := ray{origin, lower_left_corner.plus(horizontal.multiply_by(u)).plus(vertical.multiply_by(v))}
+			r := ray{origin, lowerLeftCorner.plus(horizontal.multiplyBy(u)).plus(vertical.multiplyBy(v))}
 			col := color(r)
-			ir := int(max_color * col.e0)
-			ig := int(max_color * col.e1)
-			ib := int(max_color * col.e2)
+			ir := int(maxColor * col.e0)
+			ig := int(maxColor * col.e1)
+			ib := int(maxColor * col.e2)
 			fmt.Printf("%v %v %v\n", ir, ig, ib)
 		}
 	}
@@ -30,17 +30,17 @@ func main() {
 
 func color(r ray) vec3 {
 	sphere := vec3{0.0, 0.0, -1.0}
-	t := hit_sphere(sphere, 0.5, r)
+	t := hitSphere(sphere, 0.5, r)
 	if t > 0.0 {
-		n := r.point_at_parameter(t).minus(sphere).unit_vector()
-		return vec3{n.x() + 1, n.y() + 1, n.z() + 1}.multiply_by(0.5)
+		n := r.pointAtParameter(t).minus(sphere).unitVector()
+		return vec3{n.x() + 1, n.y() + 1, n.z() + 1}.multiplyBy(0.5)
 	}
-	unit_direction := r.direction().unit_vector()
+	unit_direction := r.direction().unitVector()
 	t = 0.5 * (unit_direction.y() + 1.0)
-	return vec3{1.0, 1.0, 1.0}.multiply_by(1.0 - t).plus(vec3{0.5, 0.7, 1.0}.multiply_by(t))
+	return vec3{1.0, 1.0, 1.0}.multiplyBy(1.0 - t).plus(vec3{0.5, 0.7, 1.0}.multiplyBy(t))
 }
 
-func hit_sphere(center vec3, radius float32, r ray) float32 {
+func hitSphere(center vec3, radius float32, r ray) float32 {
 	oc := r.origin().minus(center)
 	direction := r.direction()
 	a := direction.dot(direction)

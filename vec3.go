@@ -30,12 +30,12 @@ func (vec vec3) b() float32 {
 	return vec.e2
 }
 
-func (vec vec3) squared_length() float32 {
+func (vec vec3) squaredLength() float32 {
 	return float32(vec.e0*vec.e0 + vec.e1*vec.e1 + vec.e2*vec.e2)
 }
 
 func (vec vec3) length() float32 {
-	return float32(math.Sqrt(float64(vec.squared_length())))
+	return float32(math.Sqrt(float64(vec.squaredLength())))
 }
 
 func (v1 vec3) plus(v2 vec3) vec3 {
@@ -54,11 +54,11 @@ func (v1 vec3) divide(v2 vec3) vec3 {
 	return vec3{v1.e0 / v2.e0, v1.e1 / v2.e1, v1.e2 / v2.e2}
 }
 
-func (v1 vec3) multiply_by(f float32) vec3 {
+func (v1 vec3) multiplyBy(f float32) vec3 {
 	return vec3{v1.e0 * f, v1.e1 * f, v1.e2 * f}
 }
 
-func (v1 vec3) divide_by(f float32) vec3 {
+func (v1 vec3) divideBy(f float32) vec3 {
 	return vec3{v1.e0 / f, v1.e1 / f, v1.e2 / f}
 }
 
@@ -72,6 +72,6 @@ func (v1 vec3) cros(v2 vec3) vec3 {
 		v1.e0*v2.e1 - v1.e1*v2.e0}
 }
 
-func (v1 vec3) unit_vector() vec3 {
-	return v1.divide_by(v1.length())
+func (v1 vec3) unitVector() vec3 {
+	return v1.divideBy(v1.length())
 }
