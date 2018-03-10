@@ -26,7 +26,20 @@ func main() {
 }
 
 func color(r ray) vec3 {
+	if (hit_sphere(vec3{0.0, 0.0, -1.0}, 0.5, r)) {
+		return vec3{1.0, 0.0, 0.0}
+	}
 	unit_direction := r.direction().unit_vector()
 	t := 0.5 * (unit_direction.y() + 1.0)
 	return vec3{1.0, 1.0, 1.0}.multiply_by(1.0 - t).plus(vec3{0.5, 0.7, 1.0}.multiply_by(t))
+}
+
+func hit_sphere(center vec3, radius float32, r ray) bool {
+	oc := r.origin().minus(center)
+	direction := r.direction()
+	a := direction.dot(direction)
+	b := 2.0 * oc.dot(direction)
+	c := oc.dot(oc) - radius*radius
+	discriminant := b*b - 4*a*c
+	return discriminant > 0
 }
