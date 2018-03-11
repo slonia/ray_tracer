@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 )
 
 func main() {
@@ -14,7 +13,7 @@ func main() {
 	horizontal := vec3{4, 0.0, 0.0}
 	vertical := vec3{0, 2.0, 0.0}
 	origin := vec3{0.0, 0.0, 0.0}
-	world := hitableList{[]*sphere{&sphere{center: vec3{0.0, 0.0, -1.0}, radius: 0.5}}, 1}
+	world := hitableList{[]hitable{sphere{center: vec3{0.0, 0.0, -1.0}, radius: 0.5}, sphere{center: vec3{0.0, -100.5, -1.0}, radius: 100}}, 2}
 	for j := ny - 1; j >= 0; j-- {
 		for i := 0; i < nx; i++ {
 			u := float32(i) / float32(nx)
@@ -33,8 +32,6 @@ func color(r ray, world hitable) vec3 {
 	rec := &hitRecord{}
 
 	if world.hit(r, 0.0, 100000000000.0, rec) {
-		log.Printf("In main: %v\n", rec.normal)
-
 		return vec3{rec.normal.x() + 1, rec.normal.y() + 1, rec.normal.z() + 1}.multiplyBy(0.5)
 	} else {
 		unit_direction := r.direction().unitVector()
