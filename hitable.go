@@ -1,6 +1,9 @@
 package main
 
-import "math"
+import (
+	"log"
+	"math"
+)
 
 type hitRecord struct {
 	t      float32
@@ -16,6 +19,10 @@ type sphere struct {
 	hitRecord
 	center vec3
 	radius float32
+}
+
+func (h hitRecord) hit(r ray, tMin float32, tMax float32, rec *hitRecord) bool {
+	return false
 }
 
 func (s sphere) hit(r ray, tMin float32, tMax float32, rec *hitRecord) bool {
@@ -45,19 +52,22 @@ func (s sphere) hit(r ray, tMin float32, tMax float32, rec *hitRecord) bool {
 }
 
 type hitableList struct {
-	hitable  []*hitRecord
+	hitable  []*sphere
 	listSize int
 }
 
 func (list hitableList) hit(r ray, tMin float32, tMax float32, rec *hitRecord) bool {
+	// log.Printf("In hit1: %p\n", rec)
 	var tempRec hitRecord
 	hitAnything := false
 	closestSoFar := tMax
 	for i := 0; i < list.listSize; i++ {
-		if (*list.hitable[i]).hit(r, tMin, closestSoFar, tempRec) {
+		if list.hitable[i].hit(r, tMin, closestSoFar, &tempRec) {
 			hitAnything = true
 			closestSoFar = tempRec.t
-			rec = tempRec
+			rec = &tempRec
+			log.Printf("In hit: %p\n", rec)
+			log.Printf("In hit: %v\n", *rec)
 		}
 	}
 	return hitAnything
