@@ -5,6 +5,7 @@ import "math"
 type hitRecord struct {
 	t         float32
 	p, normal vec3
+	matPtr    material
 }
 
 type hitable interface {
@@ -106,7 +107,7 @@ type hitableList struct {
 }
 
 func (hl hitableList) hit(r ray, tMin float32, tMax float32, rec hitRecordInterface) bool {
-	tempRec := &hitRecord{0, vec3{0.0, 0.0, 0.0}, vec3{0.0, 0.0, 0.0}}
+	tempRec := &hitRecord{t: 0, p: vec3{0.0, 0.0, 0.0}, normal: vec3{0.0, 0.0, 0.0}}
 	hitAnything := false
 	closestSoFar := tMax
 	for i := 0; i < hl.listSize; i++ {
