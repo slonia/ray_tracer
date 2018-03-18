@@ -38,11 +38,7 @@ func (s *sphere) setHR(h hitRecord) {
 }
 
 func (hr *hitRecord) setHR(h hitRecord) {
-	hr.t = h.t
-	hr.normal = h.normal
-	hr.p = h.p
-	hr.matPtr = h.matPtr
-
+	*hr = h
 }
 
 func (s sphere) hit(r ray, tMin float32, tMax float32, rec hitRecordInterface) bool {
@@ -86,13 +82,12 @@ func (hl hitableList) hit(r ray, tMin float32, tMax float32, rec hitRecordInterf
 	tempRec := &hitRecord{t: 0, p: vec3{0.0, 0.0, 0.0}, normal: vec3{0.0, 0.0, 0.0}, matPtr: lambertian{vec3{0.0, 0.0, 0.0}}}
 	hitAnything := false
 	closestSoFar := tMax
-	for i := 0; i < hl.listSize; i++ {
-		if hl.list[i].hit(r, tMin, closestSoFar, tempRec) {
+	for _, item := range hl.list {
+		if item.hit(r, tMin, closestSoFar, tempRec) {
 			hitAnything = true
 			hr := tempRec.getHR()
 			closestSoFar = hr.t
 			rec.setHR(hr)
-			// log.Println(rec)
 		}
 	}
 	return hitAnything
