@@ -1,13 +1,13 @@
 package main
 
 import (
-	"log"
 	"math"
 )
 
 type hitRecord struct {
 	t         float32
 	p, normal vec3
+	matPtr    material
 }
 
 type hitable interface {
@@ -21,61 +21,28 @@ type sphere struct {
 }
 
 type hitRecordInterface interface {
-	setT(t float32)
-	setP(vec vec3)
-	setNormal(vec vec3)
-	getT() float32
-	getP() vec3
-	getNormal() vec3
+	getHR() hitRecord
+	setHR(hitRecord)
 }
 
-func (s *sphere) setT(t float32) {
-	s.t = t
+func (s sphere) getHR() hitRecord {
+	return s.hitRecord
 }
 
-func (s *sphere) setP(vec vec3) {
-	s.p = vec
+func (hr hitRecord) getHR() hitRecord {
+	return hr
 }
 
-func (s *sphere) setNormal(vec vec3) {
-	s.normal = vec
+func (s *sphere) setHR(h hitRecord) {
+	s.hitRecord.setHR(h)
 }
 
-func (s sphere) getT() float32 {
-	return s.t
-}
+func (hr *hitRecord) setHR(h hitRecord) {
+	hr.t = h.t
+	hr.normal = h.normal
+	hr.p = h.p
+	hr.matPtr = h.matPtr
 
-func (s sphere) getP() vec3 {
-	return s.p
-}
-
-func (s sphere) getNormal() vec3 {
-	return s.normal
-}
-
-func (s *hitRecord) setT(t float32) {
-	log.Println("bb", t)
-	s.t = t
-}
-
-func (s *hitRecord) setP(vec vec3) {
-	s.p = vec
-}
-
-func (s *hitRecord) setNormal(vec vec3) {
-	s.normal = vec
-}
-
-func (s hitRecord) getT() float32 {
-	return s.t
-}
-
-func (s hitRecord) getP() vec3 {
-	return s.p
-}
-
-func (s hitRecord) getNormal() vec3 {
-	return s.normal
 }
 
 func (s sphere) hit(r ray, tMin float32, tMax float32, rec hitRecordInterface) bool {
@@ -88,16 +55,22 @@ func (s sphere) hit(r ray, tMin float32, tMax float32, rec hitRecordInterface) b
 	if discriminant > 0 {
 		temp := (-b - float32(math.Sqrt(float64(discriminant)))) / a
 		if temp < tMax && temp > tMin {
-			rec.setT(temp)
-			rec.setP(r.pointAtParameter(temp))
-			rec.setNormal(rec.getP().minus(s.center).divideBy(s.radius))
+			hr := rec.getHR()
+			hr.t = temp
+			hr.p = r.pointAtParameter(temp)
+			hr.normal = hr.p.minus(s.center).divideBy(s.radius)
+			hr.matPtr = s.matPtr
+			rec.setHR(hr)
 			return true
 		}
 		temp = (-b + float32(math.Sqrt(float64(discriminant)))) / a
 		if temp < tMax && temp > tMin {
-			rec.setT(temp)
-			rec.setP(r.pointAtParameter(temp))
-			rec.setNormal(rec.getP().minus(s.center).divideBy(s.radius))
+			hr := rec.getHR()
+			hr.t = temp
+			hr.p = r.pointAtParameter(temp)
+			hr.normal = hr.p.minus(s.center).divideBy(s.radius)
+			hr.matPtr = s.matPtr
+			rec.setHR(hr)
 			return true
 		}
 	}
@@ -110,17 +83,16 @@ type hitableList struct {
 }
 
 func (hl hitableList) hit(r ray, tMin float32, tMax float32, rec hitRecordInterface) bool {
-	tempRec := &hitRecord{0, vec3{0.0, 0.0, 0.0}, vec3{0.0, 0.0, 0.0}, lambertian{vec3{0.0, 0.0, 0.0}}}
+	tempRec := &hitRecord{t: 0, p: vec3{0.0, 0.0, 0.0}, normal: vec3{0.0, 0.0, 0.0}, matPtr: lambertian{vec3{0.0, 0.0, 0.0}}}
 	hitAnything := false
 	closestSoFar := tMax
 	for i := 0; i < hl.listSize; i++ {
 		if hl.list[i].hit(r, tMin, closestSoFar, tempRec) {
 			hitAnything = true
-			closestSoFar = tempRec.getT()
-			rec.setT(tempRec.getT())
-			rec.setP(tempRec.getP())
-			rec.setNormal(tempRec.getNormal())
-			log.Println(rec)
+			hr := tempRec.getHR()
+			closestSoFar = hr.t
+			rec.setHR(hr)
+			// log.Println(rec)
 		}
 	}
 	return hitAnything
