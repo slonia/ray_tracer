@@ -1,11 +1,13 @@
 package main
 
-import "math"
+import (
+	"log"
+	"math"
+)
 
 type hitRecord struct {
 	t         float32
 	p, normal vec3
-	matPtr    material
 }
 
 type hitable interface {
@@ -52,6 +54,7 @@ func (s sphere) getNormal() vec3 {
 }
 
 func (s *hitRecord) setT(t float32) {
+	log.Println("bb", t)
 	s.t = t
 }
 
@@ -107,7 +110,7 @@ type hitableList struct {
 }
 
 func (hl hitableList) hit(r ray, tMin float32, tMax float32, rec hitRecordInterface) bool {
-	tempRec := &hitRecord{t: 0, p: vec3{0.0, 0.0, 0.0}, normal: vec3{0.0, 0.0, 0.0}}
+	tempRec := &hitRecord{0, vec3{0.0, 0.0, 0.0}, vec3{0.0, 0.0, 0.0}, lambertian{vec3{0.0, 0.0, 0.0}}}
 	hitAnything := false
 	closestSoFar := tMax
 	for i := 0; i < hl.listSize; i++ {
@@ -117,6 +120,7 @@ func (hl hitableList) hit(r ray, tMin float32, tMax float32, rec hitRecordInterf
 			rec.setT(tempRec.getT())
 			rec.setP(tempRec.getP())
 			rec.setNormal(tempRec.getNormal())
+			log.Println(rec)
 		}
 	}
 	return hitAnything

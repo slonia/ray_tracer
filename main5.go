@@ -7,9 +7,9 @@ import (
 )
 
 func main() {
-	nx := 600
-	ny := 300
-	ns := 100
+	nx := 200
+	ny := 100
+	ns := 10
 	maxColor := float32(255.99)
 	cam := defaultCamera()
 	fmt.Printf("P3\n%v %v\n255\n", nx, ny)

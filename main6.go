@@ -38,15 +38,16 @@ func main() {
 }
 
 func color(r ray, world hitable, depth int) vec3 {
-	rec := &hitRecord{}
+	rec := &hitRecord{matPtr: lambertian{vec3{}}}
 
 	if world.hit(r, 0.001, 100000000000.0, rec) {
 		scattered := &ray{}
 		attenuation := &vec3{}
 		if depth < 50 && rec.matPtr.scatter(r, rec, attenuation, scattered) {
 			return attenuation.multiply(color(*scattered, world, depth+1))
+		} else {
+			return vec3{0.0, 0.0, 0.0}
 		}
-		return vec3{0.0, 0.0, 0.0}
 	} else {
 		unit_direction := r.direction().unitVector()
 		t := 0.5 * (unit_direction.y() + 1.0)
