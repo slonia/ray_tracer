@@ -15,9 +15,9 @@ func main() {
 	fmt.Printf("P3\n%v %v\n255\n", nx, ny)
 	world := hitableList{[]hitable{
 		sphere{center: vec3{0.0, 0.0, -1.0}, radius: 0.5, hitRecord: hitRecord{matPtr: lambertian{vec3{0.8, 0.3, 0.3}}}},
-		sphere{center: vec3{0.0, -100.5, -1.0}, radius: 100, hitRecord: hitRecord{matPtr: lambertian{vec3{0.8, 0.8, 0.8}}}},
-		sphere{center: vec3{1.0, 0.0, -1.0}, radius: 0.5, hitRecord: hitRecord{matPtr: metal{vec3{0.8, 0.6, 0.2}}}},
-		sphere{center: vec3{-1, 0.0, -1}, radius: 0.5, hitRecord: hitRecord{matPtr: metal{vec3{0.8, 0.8, 0.8}}}}}, 4}
+		sphere{center: vec3{0.0, -100.5, -1.0}, radius: 100, hitRecord: hitRecord{matPtr: lambertian{vec3{0.8, 0.8, 0.0}}}},
+		sphere{center: vec3{1.0, 0.0, -1.0}, radius: 0.5, hitRecord: hitRecord{matPtr: metal{vec3{0.8, 0.6, 0.2}, 0.3}}},
+		sphere{center: vec3{-1, 0.0, -1}, radius: 0.5, hitRecord: hitRecord{matPtr: metal{vec3{0.8, 0.8, 0.8}, 1.0}}}}, 4}
 	for j := ny - 1; j >= 0; j-- {
 		for i := 0; i < nx; i++ {
 			col := vec3{0.0, 0.0, 0.0}

@@ -17,11 +17,16 @@ func (l lambertian) scatter(rIn ray, rec *hitRecord, attenuation *vec3, scattere
 
 type metal struct {
 	albedo vec3
+	fuzz   float32
 }
 
 func (m metal) scatter(rIn ray, rec *hitRecord, attenuation *vec3, scattered *ray) bool {
 	reflected := reflect(rIn.direction().unitVector(), rec.normal)
-	*scattered = ray{rec.p, reflected}
+	fuzz := m.fuzz
+	if fuzz > 1.0 {
+		fuzz = 1.0
+	}
+	*scattered = ray{rec.p, reflected.plus(randomInUnitSphere().multiplyBy(fuzz))}
 	*attenuation = m.albedo
 	return scattered.direction().dot(rec.normal) > 0
 }
