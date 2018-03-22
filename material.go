@@ -58,7 +58,6 @@ func (d dielectric) scatter(rIn ray, rec *hitRecord, attenuation *vec3, scattere
 	if refract(rIn.direction(), outwardNormal, niOverNt, &refracted) {
 		reflectProb = schlick(cosine, d.refIdx)
 	} else {
-		*scattered = ray{rec.p, reflected}
 		reflectProb = 1.0
 	}
 
