@@ -66,7 +66,7 @@ func (v1 vec3) dot(v2 vec3) float32 {
 	return v1.e0*v2.e0 + v1.e1*v2.e1 + v1.e2*v2.e2
 }
 
-func (v1 vec3) cros(v2 vec3) vec3 {
+func (v1 vec3) cross(v2 vec3) vec3 {
 	return vec3{v1.e1*v2.e2 - v1.e2*v2.e1,
 		-(v1.e0*v2.e2 - v1.e2*v2.e0),
 		v1.e0*v2.e1 - v1.e1*v2.e0}
