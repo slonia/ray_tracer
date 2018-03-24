@@ -75,3 +75,19 @@ func schlick(cosine float32, refIdx float32) float32 {
 	r0 *= r0
 	return r0 + (1-r0)*float32(math.Pow(float64(1-cosine), 5))
 }
+
+func reflect(v vec3, n vec3) vec3 {
+	return v.minus(n.multiplyBy(2.0 * v.dot(n)))
+}
+
+func refract(v vec3, n vec3, niOverNt float32, refracted *vec3) bool {
+	uv := v.unitVector()
+	dt := uv.dot(n)
+	discriminant := 1.0 - niOverNt*niOverNt*(1.0-dt*dt)
+	if discriminant > 0 {
+		discSqrt := float32(math.Sqrt(float64(discriminant)))
+		*refracted = uv.minus(n.multiplyBy(dt)).multiplyBy(niOverNt).minus(n.multiplyBy(discSqrt))
+		return true
+	}
+	return false
+}

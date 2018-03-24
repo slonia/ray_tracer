@@ -14,11 +14,11 @@ func main() {
 	cam := defaultCamera()
 	fmt.Printf("P3\n%v %v\n255\n", nx, ny)
 	world := hitableList{[]hitable{
-		sphere{center: vec3{0.0, 0.0, -1.0}, radius: 0.5, hitRecord: hitRecord{matPtr: lambertian{vec3{0.8, 0.3, 0.3}}}},
+		sphere{center: vec3{0.0, 0.0, -1.0}, radius: 0.5, hitRecord: hitRecord{matPtr: lambertian{vec3{0.1, 0.2, 0.5}}}},
 		sphere{center: vec3{0.0, -100.5, -1.0}, radius: 100, hitRecord: hitRecord{matPtr: lambertian{vec3{0.8, 0.8, 0.0}}}},
 		sphere{center: vec3{1.0, 0.0, -1.0}, radius: 0.5, hitRecord: hitRecord{matPtr: metal{vec3{0.8, 0.6, 0.2}, 0.3}}},
 		sphere{center: vec3{-1, 0.0, -1}, radius: 0.5, hitRecord: hitRecord{matPtr: dielectric{1.5}}},
-		sphere{center: vec3{-1, 0.0, -1}, radius: -0.45, hitRecord: hitRecord{matPtr: dielectric{1.5}}}}, 4}
+		sphere{center: vec3{-1, 0.0, -1}, radius: -0.45, hitRecord: hitRecord{matPtr: dielectric{1.5}}}}, 5}
 	for j := ny - 1; j >= 0; j-- {
 		for i := 0; i < nx; i++ {
 			col := vec3{0.0, 0.0, 0.0}
@@ -66,19 +66,4 @@ func randomInUnitSphere() vec3 {
 		}
 	}
 	return p
-}
-
-func reflect(v vec3, n vec3) vec3 {
-	return v.minus(n.multiplyBy(2.0 * v.dot(n)))
-}
-
-func refract(v vec3, n vec3, niOverNt float32, refracted *vec3) bool {
-	uv := v.unitVector()
-	dt := uv.dot(n)
-	discriminant := 1 - niOverNt*niOverNt*(1.0-dt*dt)
-	if discriminant > 0 {
-		*refracted = v.minus(n.multiplyBy(dt)).multiplyBy(niOverNt).minus(n.multiplyBy(float32(math.Sqrt(float64(discriminant)))))
-		return true
-	}
-	return false
 }
