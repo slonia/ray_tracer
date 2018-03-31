@@ -17,7 +17,7 @@ func defaultCamera(lookfrom vec3, lookat vec3, vup vec3, vfov float32, aspect fl
 	w := lookfrom.minus(lookat).unitVector()
 	u := vup.cross(w).unitVector()
 	v := w.cross(u)
-	llCorner := lookfrom.minus(u.multiplyBy(halfWidth)).minus(v.multiplyBy(halfWidth)).minus(w)
+	llCorner := lookfrom.minus(u.multiplyBy(halfWidth)).minus(v.multiplyBy(halfHeight)).minus(w)
 	return &camera{
 		origin:          lookfrom,
 		lowerLeftCorner: llCorner,
