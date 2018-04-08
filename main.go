@@ -11,7 +11,10 @@ func main() {
 	ny := 300
 	ns := 100
 	maxColor := float32(255.99)
-	cam := defaultCamera()
+	lookfrom := vec3{3.0, 2.0, 2.0}
+	lookat := vec3{0.0, 0.0, -1.0}
+	distToFocus := lookfrom.minus(lookat).length()
+	cam := defaultCamera(lookfrom, lookat, vec3{0.0, 1.0, 0.0}, 20, float32(nx)/float32(ny), 2.0, distToFocus)
 	fmt.Printf("P3\n%v %v\n255\n", nx, ny)
 	world := hitableList{[]hitable{
 		sphere{center: vec3{0.0, 0.0, -1.0}, radius: 0.5, hitRecord: hitRecord{matPtr: lambertian{vec3{0.1, 0.2, 0.5}}}},
