@@ -6,17 +6,17 @@ import (
 
 type hitRecord struct {
 	matPtr    material
-	t         float32
+	t         float64
 	p, normal vec3
 }
 
 type hitable interface {
-	hit(r ray, tMin float32, tMax float32, rec hitRecordInterface) bool
+	hit(r ray, tMin float64, tMax float64, rec hitRecordInterface) bool
 }
 
 type sphere struct {
 	center vec3
-	radius float32
+	radius float64
 	hitRecord
 }
 
@@ -41,7 +41,7 @@ func (hr *hitRecord) setHR(h hitRecord) {
 	*hr = h
 }
 
-func (s sphere) hit(r ray, tMin float32, tMax float32, rec hitRecordInterface) bool {
+func (s sphere) hit(r ray, tMin float64, tMax float64, rec hitRecordInterface) bool {
 	oc := r.origin().minus(s.center)
 	direction := r.direction()
 	a := direction.dot(direction)
@@ -49,7 +49,7 @@ func (s sphere) hit(r ray, tMin float32, tMax float32, rec hitRecordInterface) b
 	c := oc.dot(oc) - s.radius*s.radius
 	discriminant := b*b - a*c
 	if discriminant > 0 {
-		temp := (-b - float32(math.Sqrt(float64(discriminant)))) / a
+		temp := (-b - math.Sqrt(discriminant)) / a
 		if temp < tMax && temp > tMin {
 			hr := rec.getHR()
 			hr.t = temp
@@ -59,7 +59,7 @@ func (s sphere) hit(r ray, tMin float32, tMax float32, rec hitRecordInterface) b
 			rec.setHR(hr)
 			return true
 		}
-		temp = (-b + float32(math.Sqrt(float64(discriminant)))) / a
+		temp = (-b + math.Sqrt(discriminant)) / a
 		if temp < tMax && temp > tMin {
 			hr := rec.getHR()
 			hr.t = temp
@@ -78,7 +78,7 @@ type hitableList struct {
 	listSize int
 }
 
-func (hl hitableList) hit(r ray, tMin float32, tMax float32, rec hitRecordInterface) bool {
+func (hl hitableList) hit(r ray, tMin float64, tMax float64, rec hitRecordInterface) bool {
 	tempRec := &hitRecord{t: 0, p: vec3{0.0, 0.0, 0.0}, normal: vec3{0.0, 0.0, 0.0}, matPtr: lambertian{vec3{0.0, 0.0, 0.0}}}
 	hitAnything := false
 	closestSoFar := tMax

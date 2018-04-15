@@ -22,7 +22,7 @@ func (l lambertian) scatter(rIn ray, rec *hitRecord, attenuation *vec3, scattere
 
 type metal struct {
 	albedo vec3
-	fuzz   float32
+	fuzz   float64
 }
 
 func (m metal) scatter(rIn ray, rec *hitRecord, attenuation *vec3, scattered *ray) bool {
@@ -37,13 +37,13 @@ func (m metal) scatter(rIn ray, rec *hitRecord, attenuation *vec3, scattered *ra
 }
 
 type dielectric struct {
-	refIdx float32
+	refIdx float64
 }
 
 func (d dielectric) scatter(rIn ray, rec *hitRecord, attenuation *vec3, scattered *ray) bool {
 	outwardNormal := vec3{0.0, 0.0, 0.0}
 	refracted := vec3{0.0, 0.0, 0.0}
-	var niOverNt, reflectProb, cosine float32
+	var niOverNt, reflectProb, cosine float64
 	reflected := reflect(rIn.direction(), rec.normal)
 	*attenuation = vec3{1.0, 1.0, 1.0}
 	if rIn.direction().dot(rec.normal) > 0 {
@@ -61,7 +61,7 @@ func (d dielectric) scatter(rIn ray, rec *hitRecord, attenuation *vec3, scattere
 		reflectProb = 1.0
 	}
 
-	if rand.Float32() < reflectProb {
+	if rand.Float64() < reflectProb {
 		*scattered = ray{rec.p, reflected}
 	} else {
 		*scattered = ray{rec.p, refracted}
@@ -70,22 +70,22 @@ func (d dielectric) scatter(rIn ray, rec *hitRecord, attenuation *vec3, scattere
 	return true
 }
 
-func schlick(cosine float32, refIdx float32) float32 {
+func schlick(cosine float64, refIdx float64) float64 {
 	r0 := (1 - refIdx) / (1 + refIdx)
 	r0 *= r0
-	return r0 + (1-r0)*float32(math.Pow(float64(1-cosine), 5))
+	return r0 + (1-r0)*math.Pow(1-cosine, 5)
 }
 
 func reflect(v vec3, n vec3) vec3 {
 	return v.minus(n.multiplyBy(2.0 * v.dot(n)))
 }
 
-func refract(v vec3, n vec3, niOverNt float32, refracted *vec3) bool {
+func refract(v vec3, n vec3, niOverNt float64, refracted *vec3) bool {
 	uv := v.unitVector()
 	dt := uv.dot(n)
 	discriminant := 1.0 - niOverNt*niOverNt*(1.0-dt*dt)
 	if discriminant > 0 {
-		discSqrt := float32(math.Sqrt(float64(discriminant)))
+		discSqrt := math.Sqrt(discriminant)
 		*refracted = uv.minus(n.multiplyBy(dt)).multiplyBy(niOverNt).minus(n.multiplyBy(discSqrt))
 		return true
 	}

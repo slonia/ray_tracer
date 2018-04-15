@@ -10,11 +10,11 @@ func main() {
 	nx := 600
 	ny := 300
 	ns := 100
-	maxColor := float32(255.99)
+	maxColor := 255.99
 	lookfrom := vec3{3.0, 2.0, 2.0}
 	lookat := vec3{0.0, 0.0, -1.0}
 	distToFocus := lookfrom.minus(lookat).length()
-	cam := defaultCamera(lookfrom, lookat, vec3{0.0, 1.0, 0.0}, 20, float32(nx)/float32(ny), 2.0, distToFocus)
+	cam := defaultCamera(lookfrom, lookat, vec3{0.0, 1.0, 0.0}, 20, float64(nx)/float64(ny), 2.0, distToFocus)
 	fmt.Printf("P3\n%v %v\n255\n", nx, ny)
 	world := hitableList{[]hitable{
 		sphere{vec3{0.0, 0.0, -1.0}, 0.5, hitRecord{matPtr: lambertian{vec3{0.1, 0.2, 0.5}}}},
@@ -26,13 +26,13 @@ func main() {
 		for i := 0; i < nx; i++ {
 			col := vec3{0.0, 0.0, 0.0}
 			for s := 0; s < ns; s++ {
-				u := (float32(i) + rand.Float32()) / float32(nx)
-				v := (float32(j) + rand.Float32()) / float32(ny)
+				u := (float64(i) + rand.Float64()) / float64(nx)
+				v := (float64(j) + rand.Float64()) / float64(ny)
 				r := cam.getRay(u, v)
 				col = col.plus(color(r, world, 0))
 			}
-			col = col.divideBy(float32(ns))
-			col = vec3{float32(math.Sqrt(float64(col.e0))), float32(math.Sqrt(float64(col.e1))), float32(math.Sqrt(float64(col.e2)))}
+			col = col.divideBy(float64(ns))
+			col = vec3{math.Sqrt(col.e0), math.Sqrt(col.e1), math.Sqrt(col.e2)}
 			ir := int(maxColor * col.e0)
 			ig := int(maxColor * col.e1)
 			ib := int(maxColor * col.e2)
@@ -63,7 +63,7 @@ func randomInUnitSphere() vec3 {
 	var p vec3
 	unitVec := vec3{1.0, 1.0, 1.0}
 	for {
-		p = vec3{rand.Float32(), rand.Float32(), rand.Float32()}.multiplyBy(2.0).minus(unitVec)
+		p = vec3{rand.Float64(), rand.Float64(), rand.Float64()}.multiplyBy(2.0).minus(unitVec)
 		if p.dot(p) < 1.0 {
 			break
 		}
