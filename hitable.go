@@ -5,9 +5,9 @@ import (
 )
 
 type hitRecord struct {
+	matPtr    material
 	t         float32
 	p, normal vec3
-	matPtr    material
 }
 
 type hitable interface {
@@ -15,9 +15,9 @@ type hitable interface {
 }
 
 type sphere struct {
-	hitRecord
 	center vec3
 	radius float32
+	hitRecord
 }
 
 type hitRecordInterface interface {
